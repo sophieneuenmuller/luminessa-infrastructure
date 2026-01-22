@@ -1,0 +1,13 @@
+services:
+  runner:
+    image: code.forgejo.org/forgejo/runner:3.5.1
+    container_name: forgejo-runner
+    restart: unless-stopped
+    user: "1000:988"
+    command: forgejo-runner daemon
+    volumes:
+      - ./data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+        #    entrypoint: ["sleep", "infinity"]

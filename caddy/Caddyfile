@@ -1,0 +1,14 @@
+git.luminessa.net {
+    reverse_proxy forgejo:3000
+}
+
+blog.luminessa.net {
+    root * /var/www/luminessa-blog
+    file_server
+    encode gzip
+}
+
+# Future: add more sites here
+# www.yourdomain.com {
+#     reverse_proxy website:8080
+# }

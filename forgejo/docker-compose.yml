@@ -1,0 +1,39 @@
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:13
+    container_name: forgejo
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      # Database
+      - FORGEJO__database__DB_TYPE=postgres
+      - FORGEJO__database__HOST=postgres:5432
+      - FORGEJO__database__NAME=${FORGEJO_DB_NAME}
+      - FORGEJO__database__USER=${FORGEJO_DB_USER}
+      - FORGEJO__database__PASSWD=${FORGEJO_DB_PASSWORD}
+    # Domain
+      - FORGEJO__server__DOMAIN=git.luminessa.net
+      - FORGEJO__server__ROOT_URL=https://git.luminessa.net/
+      - FORGEJO__server__SSH_DOMAIN=git.luminessa.net
+      - FORGEJO__server__SSH_PORT=222
+      # User registration
+      - FORGEJO__service__DISABLE_REGISTRATION=true
+      # Forgejo Actions
+      - FORGEJO__actions__ENABLED=true
+      - FORGEJO__actions__DEFAULT_ACTIONS_URL=https://code.forgejo.org
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "222:22"
+    networks:
+      - proxy
+      - database
+
+networks:
+  proxy:
+    external: true
+  database:
+    external: true
