@@ -8,6 +8,10 @@ blog.luminessa.net {
     encode gzip
 }
 
+sync.luminessa.net {
+    reverse_proxy syncthing:8384
+}
+
 # Future: add more sites here
 # www.yourdomain.com {
 #     reverse_proxy website:8080
