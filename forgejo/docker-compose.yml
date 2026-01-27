@@ -3,8 +3,8 @@ services:
     image: codeberg.org/forgejo/forgejo:13
     container_name: forgejo
     environment:
-      - USER_UID=1000
-      - USER_GID=1000
+      - USER_UID=${PUID}
+      - USER_UID=${PGID}
       # Database
       - FORGEJO__database__DB_TYPE=postgres
       - FORGEJO__database__HOST=postgres:5432
