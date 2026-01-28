@@ -71,7 +71,7 @@ Cada servicio está en su propio directorio con:
 | **forgejo-runner** | - | - | - | Runner de CI/CD para Forgejo Actions |
 | **postgres** | - | 127.0.0.1:5432 | - | PostgreSQL 17.7, solo accesible localmente |
 | **syncthing** | sync.luminessa.net | 22000 (sync), 21027/udp (discovery), 8384 (web) | - | Usa `/opt/syncthing/.env` como ruta absoluta |
-| **grimoire** | bookmarks.luminessa.net | 5173 | SQLite | Gestor de marcadores, storage en volumen |
+| **grimoire** | bookmarks.luminessa.net | 5173 | SQLite | Gestor de marcadores, storage en bind mount |
 | **blog** | blog.luminessa.net | - | - | Sitios estáticos desde `/var/www/luminessa-blog` |
 
 ## Comandos Comunes
@@ -217,7 +217,7 @@ sudo tar xzf forgejo-data-backup.tar.gz -C /opt/forgejo/
 **Qué respaldar por servicio:**
 - **PostgreSQL**: `/opt/postgres/data/` o usar `pg_dump` (ver sección PostgreSQL)
 - **Forgejo**: `/opt/forgejo/data/`
-- **Grimoire**: Volumen Docker `grimoire-data`
+- **Grimoire**: `/opt/grimoire/data/`
 - **Syncthing**: `/opt/syncthing/config/` y `/opt/syncthing/data/`
 - **Caddy**: `/opt/caddy/data/` (certificados TLS) y `/opt/caddy/config/`
 - **Secretos**: `/opt/secrets/` (CRÍTICO, debe estar cifrado)

@@ -1,20 +1,9 @@
-git.luminessa.net {
-    reverse_proxy forgejo:3000
-}
-
-blog.luminessa.net {
-    root * /var/www/luminessa-blog
-    file_server
-    encode gzip
-}
-
-sync.luminessa.net {
-    reverse_proxy syncthing:8384
-}
+# Add this to your existing Caddyfile
+# Grimoire Bookmark Manager
 
 bookmarks.luminessa.net {
     reverse_proxy grimoire:5173
-
+    
     # Optional: Add security headers
     header {
         # Prevent clickjacking
@@ -24,10 +13,10 @@ bookmarks.luminessa.net {
         # Referrer policy
         Referrer-Policy "strict-origin-when-cross-origin"
     }
+    
+    # Logging (optional - uncomment if you want separate logs)
+    # log {
+    #     output file /var/log/caddy/grimoire.log
+    #     format json
+    # }
 }
-
-
-# Future: add more sites here
-# www.yourdomain.com {
-#     reverse_proxy website:8080
-# }

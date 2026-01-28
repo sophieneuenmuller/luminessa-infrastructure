@@ -1,0 +1,31 @@
+# Grimoire Bookmark Manager
+# Part of luminessa.net infrastructure
+#
+# Storage: SQLite (single file in bind mount)
+# Network: Connects to existing Caddy reverse proxy
+
+services:
+  grimoire:
+    image: goniszewski/grimoire:latest
+    container_name: grimoire
+    restart: unless-stopped
+    environment:
+      - PORT=5173
+      - PUBLIC_HTTPS_ONLY=true
+      # Set to 'true' after creating your account
+      - PUBLIC_SIGNUP_DISABLED=false
+    volumes:
+      - ./data:/app/data/
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - caddy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5173/api/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  caddy:
+    external: true
