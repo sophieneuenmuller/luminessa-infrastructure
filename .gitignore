@@ -13,3 +13,12 @@ data/
 # Caddy data and config
 caddy/data/
 caddy/config/
+
+# Editor temporary files
+*.swp
+*.swo
+*.kate-swp
+*~
+.*.sw?
+.vscode/
+.idea/

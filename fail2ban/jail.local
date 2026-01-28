@@ -1,0 +1,96 @@
+# Fail2ban configuration for luminessa.net infrastructure
+# Symlink this file to /etc/fail2ban/jail.local
+#
+# After symlinking, restart fail2ban:
+#   sudo systemctl restart fail2ban
+#
+# View banned IPs:
+#   sudo fail2ban-client status
+#   sudo fail2ban-client status sshd
+#   sudo fail2ban-client status forgejo-ssh
+
+[DEFAULT]
+# Ban time: 1 hour for first offense
+bantime = 3600
+
+# Find time window: 10 minutes
+findtime = 600
+
+# Max retries before ban
+maxretry = 10
+
+# Destination email for ban notifications (optional)
+# destemail = admin@luminessa.net
+# sender = fail2ban@luminessa.net
+
+# Action: ban only (add %(action_mwl)s to send email notifications)
+action = %(action_)s
+
+# Ignore local IPs (adjust as needed)
+ignoreip = 127.0.0.1/8 ::1
+
+
+# ============================================================================
+# SSH (default port 22)
+# ============================================================================
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 5
+bantime = 3600
+
+
+# ============================================================================
+# Forgejo SSH (port 222)
+# ============================================================================
+[forgejo-ssh]
+enabled = true
+port = 222
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 5
+bantime = 7200
+
+
+# ============================================================================
+# Caddy / HTTP(S) - Generic HTTP auth failures
+# ============================================================================
+# Note: This requires Caddy to log failed auth attempts
+# You may need to configure Caddy logging first
+#[caddy-auth]
+#enabled = false
+#port = http,https
+#filter = caddy-auth
+#logpath = /var/log/caddy/access.log
+#maxretry = 5
+#bantime = 3600
+
+
+# ============================================================================
+# Docker container logs (if using journald)
+# ============================================================================
+# For services running in Docker that log to journald
+#[forgejo-app]
+#enabled = false
+#port = http,https
+#filter = forgejo
+#logpath = /var/log/journal/forgejo.log
+#maxretry = 10
+#findtime = 600
+#bantime = 3600
+
+
+# ============================================================================
+# Aggressive recidive jail
+# Bans IPs that have been banned multiple times
+# ============================================================================
+[recidive]
+enabled = true
+filter = recidive
+logpath = /var/log/fail2ban.log
+# Ban for 1 week if banned 3 times in 1 day
+maxretry = 3
+findtime = 86400
+bantime = 604800

@@ -1,4 +1,9 @@
 git.luminessa.net {
+    # Limit request body size to prevent large payload attacks
+    request_body {
+        max_size 10MB
+    }
+
     reverse_proxy forgejo:3000
 
     header {
@@ -25,6 +30,11 @@ blog.luminessa.net {
 }
 
 sync.luminessa.net {
+    # Limit request body size (Syncthing handles large files internally via its own protocol)
+    request_body {
+        max_size 10MB
+    }
+
     reverse_proxy syncthing:8384
 
     header {
@@ -38,6 +48,11 @@ sync.luminessa.net {
 }
 
 bookmarks.luminessa.net {
+    # Limit request body size for uploads (screenshots, etc.)
+    request_body {
+        max_size 20MB
+    }
+
     reverse_proxy grimoire:5173
 
     header {
