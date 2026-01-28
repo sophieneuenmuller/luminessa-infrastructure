@@ -267,13 +267,6 @@ Los backups de `/opt/secrets/` deben:
 2. Almacenarse en ubicación segura separada
 3. Tener acceso restringido solo a administradores autorizados
 
-## Problemas Conocidos
-
-**Forgejo docker-compose.yml** (`forgejo/docker-compose.yml:6-7`):
-- Hay un bug donde `USER_UID=${PGID}` aparece en la línea 7, cuando debería ser `USER_GID=${PGID}`
-- Actualmente ambas líneas 6 y 7 dicen `USER_UID`, lo cual es incorrecto
-- Esto podría causar que el GID no se configure correctamente
-
 ## Workflow de Git
 
 ### Hacer cambios y sincronizar

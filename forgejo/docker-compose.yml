@@ -4,7 +4,7 @@ services:
     container_name: forgejo
     environment:
       - USER_UID=${PUID}
-      - USER_UID=${PGID}
+      - USER_GID=${PGID}
       # Database
       - FORGEJO__database__DB_TYPE=postgres
       - FORGEJO__database__HOST=postgres:5432
