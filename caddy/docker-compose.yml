@@ -9,7 +9,7 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - ./data:/data
       - ./config:/config
       - /var/www/luminessa-blog:/var/www/luminessa-blog:ro

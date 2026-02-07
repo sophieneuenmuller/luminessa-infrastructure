@@ -1,50 +1,50 @@
 git.luminessa.net {
-    # Limit request body size to prevent large payload attacks
-    request_body {
-        max_size 10MB
-    }
+	# Limit request body size to prevent large payload attacks
+	request_body {
+		max_size 10MB
+	}
 
-    reverse_proxy forgejo:3000
+	reverse_proxy forgejo:3000
 
-    header {
-        # Prevent clickjacking
-        X-Frame-Options "SAMEORIGIN"
-        # XSS protection
-        X-Content-Type-Options "nosniff"
-        # Referrer policy
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
+	header {
+		# Prevent clickjacking
+		X-Frame-Options "SAMEORIGIN"
+		# XSS protection
+		X-Content-Type-Options "nosniff"
+		# Referrer policy
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
 }
 
 blog.luminessa.net {
-    root * /var/www/luminessa-blog
-    file_server
-    encode gzip
+	root * /var/www/luminessa-blog
+	file_server
+	encode gzip
 
-    header {
-        # Even for static content, prevent MIME sniffing
-        X-Content-Type-Options "nosniff"
-        # Referrer policy for external links in blog
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
+	header {
+		# Even for static content, prevent MIME sniffing
+		X-Content-Type-Options "nosniff"
+		# Referrer policy for external links in blog
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
 }
 
 sync.luminessa.net {
-    # Limit request body size (Syncthing handles large files internally via its own protocol)
-    request_body {
-        max_size 10MB
-    }
+	# Limit request body size (Syncthing handles large files internally via its own protocol)
+	request_body {
+		max_size 10MB
+	}
 
-    reverse_proxy syncthing:8384
+	reverse_proxy syncthing:8384
 
-    header {
-        # Prevent clickjacking
-        X-Frame-Options "SAMEORIGIN"
-        # XSS protection
-        X-Content-Type-Options "nosniff"
-        # Referrer policy
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
+	header {
+		# Prevent clickjacking
+		X-Frame-Options "SAMEORIGIN"
+		# XSS protection
+		X-Content-Type-Options "nosniff"
+		# Referrer policy
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
 }
 
 # Future: add more sites here
