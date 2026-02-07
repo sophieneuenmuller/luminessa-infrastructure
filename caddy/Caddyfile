@@ -47,25 +47,6 @@ sync.luminessa.net {
     }
 }
 
-bookmarks.luminessa.net {
-    # Limit request body size for uploads (screenshots, etc.)
-    request_body {
-        max_size 20MB
-    }
-
-    reverse_proxy grimoire:5173
-
-    header {
-        # Prevent clickjacking
-        X-Frame-Options "SAMEORIGIN"
-        # XSS protection
-        X-Content-Type-Options "nosniff"
-        # Referrer policy
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
-}
-
-
 # Future: add more sites here
 # www.yourdomain.com {
 #     reverse_proxy website:8080

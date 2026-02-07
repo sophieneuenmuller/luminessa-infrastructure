@@ -21,7 +21,6 @@ caddy/
 | git.luminessa.net | forgejo:3000 | Headers, body size limit |
 | blog.luminessa.net | /var/www/luminessa-blog | Headers (static files) |
 | sync.luminessa.net | syncthing:8384 | Headers, body size limit |
-| bookmarks.luminessa.net | grimoire:5173 | Headers, body size limit |
 
 ### Security Headers
 
@@ -35,8 +34,7 @@ Todos los servicios incluyen:
 Límites de tamaño de peticiones para prevenir ataques de payload grandes:
 
 - **Forgejo**: 10MB para endpoints de login/API
-- **Syncthing**: 50MB (maneja archivos grandes internamente)
-- **Grimoire**: 5MB para API, 20MB para uploads (screenshots)
+- **Syncthing**: 10MB (maneja archivos grandes internamente vía su propio protocolo)
 - **Blog**: Sin límite (archivos estáticos)
 
 ## Rate Limiting avanzado

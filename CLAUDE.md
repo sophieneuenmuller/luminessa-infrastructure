@@ -41,7 +41,6 @@ El archivo `Caddyfile` define las rutas para cada servicio y maneja automáticam
 - `git.luminessa.net` → forgejo:3000
 - `blog.luminessa.net` → `/var/www/luminessa-blog` (archivos estáticos)
 - `sync.luminessa.net` → syncthing:8384
-- `bookmarks.luminessa.net` → grimoire:5173 (con security headers)
 
 Para agregar un nuevo servicio:
 1. Añadir el bloque de configuración al `Caddyfile`
@@ -71,7 +70,6 @@ Cada servicio está en su propio directorio con:
 | **forgejo-runner** | - | - | - | Runner de CI/CD para Forgejo Actions |
 | **postgres** | - | 127.0.0.1:5432 | - | PostgreSQL 17.7, solo accesible localmente |
 | **syncthing** | sync.luminessa.net | 22000 (sync), 21027/udp (discovery), 8384 (web) | - | Usa `/opt/syncthing/.env` como ruta absoluta |
-| **grimoire** | bookmarks.luminessa.net | 5173 | SQLite | Gestor de marcadores, storage en bind mount |
 | **blog** | blog.luminessa.net | - | - | Sitios estáticos desde `/var/www/luminessa-blog` |
 
 ## Comandos Comunes
@@ -217,7 +215,6 @@ sudo tar xzf forgejo-data-backup.tar.gz -C /opt/forgejo/
 **Qué respaldar por servicio:**
 - **PostgreSQL**: `/opt/postgres/data/` o usar `pg_dump` (ver sección PostgreSQL)
 - **Forgejo**: `/opt/forgejo/data/`
-- **Grimoire**: `/opt/grimoire/data/`
 - **Syncthing**: `/opt/syncthing/config/` y `/opt/syncthing/data/`
 - **Caddy**: `/opt/caddy/data/` (certificados TLS) y `/opt/caddy/config/`
 - **Secretos**: `/opt/secrets/` (CRÍTICO, debe estar cifrado)
@@ -239,9 +236,6 @@ sudo tar xzf forgejo-data-backup.tar.gz -C /opt/forgejo/
 
 - **Caddy**: Maneja todos los certificados TLS, renovación automática
 - **Forgejo**: Registro público deshabilitado (`DISABLE_REGISTRATION=true`), SSH en puerto no estándar (222)
-- **Grimoire**:
-  - Security headers en Caddyfile (X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
-  - Registro debe deshabilitarse después de crear cuenta admin
 - **PostgreSQL**: Solo escucha en localhost, credenciales por servicio separadas
 - **Syncthing**: Datos cifrados en `/opt/syncthing/data`
 
@@ -323,11 +317,6 @@ PGID=1000
 FORGEJO_DB_NAME=nombre_db
 FORGEJO_DB_USER=usuario_db
 FORGEJO_DB_PASSWORD=contraseña_db
-```
-
-**Grimoire** (`grimoire/.env.example`):
-```bash
-GRIMOIRE_SIGNUP_DISABLED=false  # Cambiar a true después de crear cuenta admin
 ```
 
 **Syncthing**: No tiene `.env.example` en el repositorio. Su `docker-compose.yml` usa `env_file: /opt/syncthing/.env` apuntando directamente al directorio de trabajo.
