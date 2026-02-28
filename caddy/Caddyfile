@@ -47,7 +47,13 @@ sync.luminessa.net {
 	}
 }
 
-# Future: add more sites here
-# www.yourdomain.com {
-#     reverse_proxy website:8080
-# }
+luminessa.net, www.luminessa.net {
+	root * /var/www/luminessa-landing
+	file_server
+	encode gzip
+
+	header {
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+}
