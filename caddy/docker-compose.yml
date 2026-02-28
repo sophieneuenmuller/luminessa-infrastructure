@@ -13,6 +13,7 @@ services:
       - ./data:/data
       - ./config:/config
       - /var/www/luminessa-blog:/var/www/luminessa-blog:ro
+      - /var/www/luminessa-landing:/var/www/luminessa-landing:ro
     cap_add:
       - NET_BIND_SERVICE
     networks:
