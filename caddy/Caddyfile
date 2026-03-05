@@ -57,3 +57,17 @@ luminessa.net, www.luminessa.net {
 		Referrer-Policy "strict-origin-when-cross-origin"
 	}
 }
+
+backups.luminessa.net {
+	request_body {
+		max_size 10MB
+	}
+
+	reverse_proxy backrest:9898
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+}

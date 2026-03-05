@@ -1,0 +1,28 @@
+services:
+  backrest:
+    image: garethgeorge/backrest:latest
+    container_name: backrest
+    restart: unless-stopped
+    environment:
+      - BACKREST_CONFIG=/config/config.json
+      - BACKREST_DATA=/data
+      - TZ=Europe/Madrid
+    volumes:
+      - ./config:/config
+      - ./data:/data
+      - ./cache:/cache
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt:/opt:ro
+      - /opt/backup:/backup
+      - /etc/ssh:/etc/ssh:ro
+      - /etc/fail2ban:/etc/fail2ban:ro
+      - /etc/ufw:/etc/ufw:ro
+      - /home/sophie/.ssh:/home/sophie/.ssh:ro
+      - /home/blog-deploy/.ssh:/home/blog-deploy/.ssh:ro
+      - /var/www:/var/www:ro
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
