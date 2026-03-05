@@ -1,0 +1,31 @@
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    restart: unless-stopped  
+    ports:  
+      - "53:53/tcp" # Expose port 53 on TCP and UDP for DNS queries
+      - "53:53/udp"
+      - "67:67/udp" # Expose port 67 on UDP for DHCP server
+      # - "68:68/udp" # Expose port 68 on UDP for DHCP client
+      - "80:80/tcp" # Expose port 80 on TCP for HTTP web interface
+      - "443:443/tcp" # Expose port 443 on TCP and UDP for HTTPS web interface
+      - "443:443/udp"
+      - "3000:3000/tcp" # Expose port 3000 on TCP for AdGuard Home's API
+      - "853:853/tcp" # Expose port 853 on TCP for DNS-over-TLS (DoT)
+      - "784:784/udp" # Expose port 784 on UDP for DNS-over-QUIC (DoQ)
+      - "853:853/udp" # Expose port 853 on UDP for DNS-over-DTLS (DoT)
+      - "8853:8853/udp" # Expose port 8853 on UDP for DNS-over-TLS (DoT)
+      - "5443:5443/tcp" # Expose port 5443 on TCP and UDP for DNSCrypt
+      - "5443:5443/udp"
+    volumes:  # Mount host directories as volumes inside the container
+      - /data/adguard-home/work:/opt/adguard/work
+      - /data/adguard-home/confdir:/opt/adguard/conf
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+  
+  

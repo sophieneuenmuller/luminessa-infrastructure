@@ -71,3 +71,13 @@ backups.luminessa.net {
 		Referrer-Policy "strict-origin-when-cross-origin"
 	}
 }
+
+adguard.luminessa.net {
+	reverse_proxy adguard:80
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+}
