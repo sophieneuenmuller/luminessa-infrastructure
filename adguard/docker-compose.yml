@@ -22,8 +22,9 @@ services:
       - "5443:5443/tcp" # Expose port 5443 on TCP and UDP for DNSCrypt
       - "5443:5443/udp"
     volumes:  # Mount host directories as volumes inside the container
-      - /data/adguard-home/work:/opt/adguard/work
-      - /data/adguard-home/confdir:/opt/adguard/conf
+      - ./work:/opt/adguardhome/work
+      - ./conf:/opt/adguardhome/conf
+      - /opt/caddy/data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/adguard.luminessa.net/:/certs:ro
     networks:
       - proxy
 

@@ -73,11 +73,11 @@ backups.luminessa.net {
 }
 
 adguard.luminessa.net {
-	reverse_proxy adguard:80
-
-	header {
-		X-Frame-Options "SAMEORIGIN"
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
+	reverse_proxy https://adguardhome:443 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		transport http {
+			tls_server_name adguard.luminessa.net
+		}
 	}
 }
