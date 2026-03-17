@@ -3,7 +3,17 @@ services:
     image: caddy:2
     container_name: caddy
     restart: unless-stopped
-    user: "999:1002"
+    user: "${PUID}:${PGID}"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     ports:
       - "80:80"
       - "443:443"

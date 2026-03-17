@@ -21,6 +21,17 @@ services:
       # Forgejo Actions
       - FORGEJO__actions__ENABLED=true
       - FORGEJO__actions__DEFAULT_ACTIONS_URL=https://code.forgejo.org
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
     volumes:
       - ./data:/data

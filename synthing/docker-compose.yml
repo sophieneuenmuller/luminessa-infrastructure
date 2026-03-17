@@ -10,6 +10,17 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-fkLs", "http://localhost:8384/rest/system/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     volumes:
       - ./config:/var/syncthing
       - ./data:/sync  # Encrypted data storage

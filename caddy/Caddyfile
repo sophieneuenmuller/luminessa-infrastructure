@@ -1,3 +1,16 @@
+(headers) {
+	header {
+		# Prevent clickjacking
+		X-Frame-Options "SAMEORIGIN"
+		# XSS protection
+		X-Content-Type-Options "nosniff"
+		# Referrer policy
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Enforce HTTPS
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+	}
+}
+
 git.luminessa.net {
 	# Limit request body size to prevent large payload attacks
 	request_body {
@@ -6,14 +19,7 @@ git.luminessa.net {
 
 	reverse_proxy forgejo:3000
 
-	header {
-		# Prevent clickjacking
-		X-Frame-Options "SAMEORIGIN"
-		# XSS protection
-		X-Content-Type-Options "nosniff"
-		# Referrer policy
-		Referrer-Policy "strict-origin-when-cross-origin"
-	}
+	import headers
 }
 
 blog.luminessa.net {
@@ -21,12 +27,7 @@ blog.luminessa.net {
 	file_server
 	encode gzip
 
-	header {
-		# Even for static content, prevent MIME sniffing
-		X-Content-Type-Options "nosniff"
-		# Referrer policy for external links in blog
-		Referrer-Policy "strict-origin-when-cross-origin"
-	}
+	import headers
 }
 
 sync.luminessa.net {
@@ -37,14 +38,7 @@ sync.luminessa.net {
 
 	reverse_proxy syncthing:8384
 
-	header {
-		# Prevent clickjacking
-		X-Frame-Options "SAMEORIGIN"
-		# XSS protection
-		X-Content-Type-Options "nosniff"
-		# Referrer policy
-		Referrer-Policy "strict-origin-when-cross-origin"
-	}
+	import headers
 }
 
 luminessa.net, www.luminessa.net {
@@ -52,10 +46,7 @@ luminessa.net, www.luminessa.net {
 	file_server
 	encode gzip
 
-	header {
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
-	}
+	import headers
 }
 
 backups.luminessa.net {
@@ -65,11 +56,7 @@ backups.luminessa.net {
 
 	reverse_proxy backrest:9898
 
-	header {
-		X-Frame-Options "SAMEORIGIN"
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
-	}
+	import headers
 }
 
 adguard.luminessa.net {
@@ -80,4 +67,6 @@ adguard.luminessa.net {
 			tls_server_name adguard.luminessa.net
 		}
 	}
+
+	import headers
 }

@@ -4,8 +4,18 @@ services:
     container_name: adguardhome
     restart: unless-stopped
     environment:
-      - PUID=999
-      - PGID=1002
+      - PUID=${PUID}
+      - PGID=${PGID}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "/opt/adguardhome/AdGuardHome", "--check-config"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
     ports:
       - "53:53/tcp" # Expose port 53 on TCP and UDP for DNS queries
       - "53:53/udp"
