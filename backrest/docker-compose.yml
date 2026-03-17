@@ -1,6 +1,7 @@
 services:
   backrest:
     build: .
+    image: luminessa-backrest:local
     container_name: backrest
     restart: unless-stopped
     environment:
