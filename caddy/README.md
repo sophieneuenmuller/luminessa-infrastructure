@@ -1,245 +1,133 @@
-# Caddy Configuration
+# Caddy: The Front Door / La Puerta de Entrada
 
-Caddy actúa como reverse proxy central y maneja automáticamente certificados TLS vía Let's Encrypt.
+[English](#english) | [Español](#español)
 
-## Estructura
+---
 
-```
-caddy/
-├── Caddyfile           # Configuración principal
-├── docker-compose.yml  # Definición del servicio
-├── data/              # Certificados TLS (persistente, no en git)
-└── config/            # Configuración de Caddy (persistente, no en git)
-```
+## English
 
-## Configuración actual
+### 1. Introduction
 
-### Servicios expuestos
+Caddy serves as the **Front Door (Edge Proxy)** for the entire Luminessa lab. It is the single point of entry for all external traffic, responsible for routing requests to the appropriate internal services.
 
-| Dominio | Backend | Protecciones |
-|---------|---------|--------------|
-| git.luminessa.net | forgejo:3000 | Headers, body size limit |
-| blog.luminessa.net | /var/www/luminessa-blog | Headers (static files) |
-| sync.luminessa.net | syncthing:8384 | Headers, body size limit |
+**Why Caddy?**
 
-### Security Headers
+* **Simplicity:** A human-readable configuration (Caddyfile) that is easy to maintain and version control.
+* **Automatic TLS:** Out-of-the-box HTTPS via Let's Encrypt or ZeroSSL, eliminating the manual toil of certificate management.
+* **Modern Performance:** Written in Go, it provides a fast, memory-safe, and highly concurrent foundation for our infrastructure.
 
-Todos los servicios incluyen:
-- `X-Frame-Options: SAMEORIGIN` - Previene clickjacking
-- `X-Content-Type-Options: nosniff` - Previene MIME sniffing
-- `Referrer-Policy: strict-origin-when-cross-origin` - Protege URLs privadas
+### 2. Configuration Management
 
-### Request Body Limits
+To maintain a "Single Source of Truth," Caddy follows our centralized environment strategy:
 
-Límites de tamaño de peticiones para prevenir ataques de payload grandes:
+* **Secrets & Env Vars:** Managed via the root `.env` file.
+* **Symlink Strategy:** A symlink from the root `.env` to `caddy/.env` ensures that environment variables are shared without duplication, keeping secrets secure and centralized.
 
-- **Forgejo**: 10MB para endpoints de login/API
-- **Syncthing**: 10MB (maneja archivos grandes internamente vía su propio protocolo)
-- **Blog**: Sin límite (archivos estáticos)
+### 3. Security Focus (Pragmatic Security)
 
-## Rate Limiting avanzado
+We don't just add headers for the sake of it; we apply **Pragmatic Security** to mitigate real-world risks while maintaining usability.
 
-La configuración actual usa límites de tamaño de body como protección básica. Para rate limiting real basado en IPs, necesitas el plugin `caddy-ratelimit`.
+* **Security Headers:** Standard headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`) are applied to prevent common attacks like clickjacking and MIME-sniffing.
+* **Request Body Limits:** Explicit `max_size` limits (e.g., 10MB for Forgejo) are set to prevent "Large Payload" attacks that could exhaust server resources (DoS).
 
-### Opción 1: Usar imagen Caddy con plugins
+### 4. Operational Guide
 
-Crear un Dockerfile personalizado:
-
-```dockerfile
-# caddy/Dockerfile
-FROM caddy:2-builder AS builder
-
-RUN xcaddy build \
-    --with github.com/mholt/caddy-ratelimit
-
-FROM caddy:2
-
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
-```
-
-Actualizar `docker-compose.yml`:
-```yaml
-services:
-  caddy:
-    build: .
-    # ... resto de configuración
-```
-
-Luego en Caddyfile:
-```caddy
-git.luminessa.net {
-    rate_limit {
-        zone git_login {
-            key {remote_host}
-            events 10
-            window 1m
-        }
-        match {
-            path /user/login /api/*
-        }
-    }
-    reverse_proxy forgejo:3000
-}
-```
-
-### Opción 2: Usar fail2ban (implementado)
-
-Fail2ban complementa Caddy bloqueando IPs a nivel de firewall después de múltiples intentos fallidos.
-
-Ver `fail2ban/README.md` para más detalles.
-
-## Comandos útiles
+Practical commands for day-to-day SysAdmin operations:
 
 ```bash
-# Validar Caddyfile antes de recargar
+# Validate Caddyfile syntax before applying changes
 docker exec caddy caddy validate --config /etc/caddy/Caddyfile
 
-# Recargar configuración (sin downtime)
+# Reload configuration without downtime (Graceful Reload)
 docker exec caddy caddy reload --config /etc/caddy/Caddyfile
 
-# Ver configuración actual
+# Check current running configuration
 docker exec caddy caddy config
 
-# Ver logs
-docker logs caddy
+# Monitor logs in real-time
 docker logs -f caddy --tail 100
 
-# Forzar renovación de certificados (normalmente automático)
-docker exec caddy caddy reload --force
+# If a configuration change does not take effect, force a full restart
+docker compose down && docker compose up -d
 ```
 
-## Agregar un nuevo servicio
+### 5. Troubleshooting
 
-1. Editar `Caddyfile`:
-   ```caddy
-   newservice.luminessa.net {
-       request_body {
-           max_size 10MB
-       }
+* **Certificate Failures:** Check internet connectivity and Caddy logs for ACME errors:
+  `docker logs caddy | grep -i "acme"`
+* **Service Unreachable:** Ensure the target container is on the `proxy` network:
+  `docker network inspect proxy`
+* **Config Not Applying:** Always `validate` before `reload`. If `reload` fails, the old config remains active.
 
-       reverse_proxy service-name:port
+### 6. Roadmap: Future Hardening
 
-       header {
-           X-Frame-Options "SAMEORIGIN"
-           X-Content-Type-Options "nosniff"
-           Referrer-Policy "strict-origin-when-cross-origin"
-       }
-   }
-   ```
+My infrastructure is a **Perpetual Work in Progress**. The following enhancements are planned for future iterations:
 
-2. Validar y recargar:
-   ```bash
-   docker exec caddy caddy validate --config /etc/caddy/Caddyfile
-   docker exec caddy caddy reload --config /etc/caddy/Caddyfile
-   ```
+* **Advanced Rate Limiting:** Implementing `caddy-ratelimit` for granular IP-based protection on sensitive endpoints (/login, /api).
+* **Strict Hardening:** Gradual rollout of `Strict-Transport-Security` (HSTS) and `Content-Security-Policy` (CSP) once service compatibility is fully verified.
+* **Structured Logging:** Transitioning to JSON-formatted access logs for better integration with log aggregators.
 
-3. Asegurarse que el servicio está en la red `proxy`:
-   ```yaml
-   # En docker-compose.yml del servicio
-   networks:
-     - proxy
-   ```
+---
 
-## Troubleshooting
+## Español
 
-### Error: "certificate verification failed"
+### 1. Introducción
 
-Caddy necesita acceso a internet para obtener certificados de Let's Encrypt. Verifica:
+Caddy actúa como la **Front Door (Edge Proxy)** de todo el laboratorio Luminessa. Es el punto único de entrada para todo el tráfico externo, encargado de dirigir las peticiones a los servicios internos correspondientes.
+
+**¿Por qué Caddy?**
+
+* **Simplicidad:** Una configuración legible por humanos (Caddyfile) fácil de mantener y versionar.
+* **TLS Automático:** HTTPS nativo vía Let's Encrypt o ZeroSSL, eliminando el trabajo manual de gestión de certificados.
+* **Rendimiento Moderno:** Escrito en Go, proporciona una base rápida, segura en memoria y altamente concurrente para nuestra infraestructura.
+
+### 2. Gestión de Configuración
+
+Para mantener una "Fuente Única de Verdad", Caddy sigue nuestra estrategia de entorno centralizada:
+
+* **Secretos y Variables de Entorno:** Gestionados vía el archivo `.env` en la raíz.
+* **Estrategia de Symlinks:** Un enlace simbólico desde el `.env` raíz hacia `caddy/.env` asegura que las variables se compartan sin duplicación, manteniendo los secretos seguros y centralizados.
+
+### 3. Foco en Seguridad (Seguridad Pragmática)
+
+No añadimos cabeceras por deporte; aplicamos **Seguridad Pragmática** para mitigar riesgos reales manteniendo la usabilidad.
+
+* **Security Headers:** Se aplican cabeceras estándar (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`) para prevenir ataques comunes como clickjacking y MIME-sniffing.
+* **Límites de Body:** Se establecen límites explícitos de `max_size` (ej: 10MB para Forgejo) para prevenir ataques de "Large Payload" que podrían agotar los recursos del servidor (DoS).
+
+### 4. Guía Operativa
+
+Comandos prácticos para operaciones diarias de SysAdmin:
+
 ```bash
-docker logs caddy | grep -i "certificate\|acme"
-```
-
-### Servicio no accesible
-
-1. Verificar que el container está en la red correcta:
-   ```bash
-   docker network inspect proxy | grep <container-name>
-   ```
-
-2. Verificar que el servicio está corriendo:
-   ```bash
-   docker ps | grep <container-name>
-   ```
-
-3. Testear conexión directa al backend:
-   ```bash
-   docker exec caddy wget -O- http://forgejo:3000
-   ```
-
-### Cambios en Caddyfile no se aplican
-
-Asegúrate de recargar Caddy después de cambios:
-```bash
-docker exec caddy caddy reload --config /etc/caddy/Caddyfile
-```
-
-Si hay errores de sintaxis, el reload fallará. Valida primero:
-```bash
+# Validar la sintaxis del Caddyfile antes de aplicar cambios
 docker exec caddy caddy validate --config /etc/caddy/Caddyfile
+
+# Recargar configuración sin tiempo de inactividad (Graceful Reload)
+docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+
+# Ver la configuración actual en ejecución
+docker exec caddy caddy config
+
+# Monitorear logs en tiempo real
+docker logs -f caddy --tail 100
+
+# Si un cambio en la configuración no surte efecto, forzar un reinicio completo
+docker compose down && docker compose up -d
 ```
 
-## Monitoreo
+### 5. Troubleshooting
 
-### Ver peticiones en tiempo real
+* **Fallos de Certificados:** Verificar conectividad a internet y buscar errores ACME en los logs:
+  `docker logs caddy | grep -i "acme"`
+* **Servicio Inalcanzable:** Asegurarse de que el contenedor destino esté en la red `proxy`:
+  `docker network inspect proxy`
+* **Cambios no Aplicados:** Siempre `validate` antes de `reload`. Si el `reload` falla, la configuración anterior sigue activa.
 
-```bash
-docker logs -f caddy
-```
+### 6. Roadmap: Futuro Hardening
 
-### Estadísticas de certificados
+Mi infraestructura es un **Trabajo en Progreso Perpetuo**. Las siguientes mejoras están planeadas para futuras iteraciones:
 
-```bash
-# Ver certificados gestionados
-docker exec caddy ls -la /data/caddy/certificates/
-
-# Ver fecha de expiración
-docker exec caddy caddy list-certificates
-```
-
-## Seguridad adicional
-
-### Headers adicionales recomendados (opcional)
-
-```caddy
-header {
-    # HSTS - Fuerza HTTPS (implementar con cuidado)
-    Strict-Transport-Security "max-age=31536000; includeSubDomains"
-
-    # CSP - Requiere testing extensivo
-    # Content-Security-Policy "default-src 'self'"
-
-    # Permissions Policy
-    Permissions-Policy "geolocation=(), microphone=(), camera=()"
-}
-```
-
-**⚠️ Advertencia**: `Strict-Transport-Security` con `preload` es difícil de revertir. Testea primero con `max-age` bajo.
-
-### Logging avanzado
-
-Para habilitar logs de acceso estructurados:
-
-```caddy
-git.luminessa.net {
-    log {
-        output file /var/log/caddy/git-access.log {
-            roll_size 100mb
-            roll_keep 5
-        }
-        format json
-    }
-    # ... resto de configuración
-}
-```
-
-Luego montar el volumen en docker-compose.yml:
-```yaml
-volumes:
-  - ./logs:/var/log/caddy
-```
-
-## Recursos
-
-- [Documentación de Caddy](https://caddyserver.com/docs/)
-- [Caddyfile Directives](https://caddyserver.com/docs/caddyfile/directives)
-- [Caddy Community Forum](https://caddy.community/)
+* **Rate Limiting Avanzado:** Implementación de `caddy-ratelimit` para protección granular basada en IP en endpoints sensibles (/login, /api).
+* **Hardening Estricto:** Despliegue gradual de `Strict-Transport-Security` (HSTS) y `Content-Security-Policy` (CSP) una vez verificada la compatibilidad total.
+* **Logging Estructurado:** Transición a logs de acceso en formato JSON para mejor integración con agregadores de logs.
