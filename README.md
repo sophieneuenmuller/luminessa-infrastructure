@@ -1,7 +1,7 @@
 # Luminessa Infrastructure (Personal Lab)
 
-[![Infrastructure](https://img.shields.io/badge/Infrastructure-Self--Hosted-blue.svg)](#)
-[![Security](https://img.shields.io/badge/Security-Hardened-green.svg)](#)
+<a href="#"><img src="https://img.shields.io/static/v1?label=Infrastructure&message=Self-Hosted&color=blue" alt="Infrastructure"></a>
+<a href="#"><img src="https://img.shields.io/static/v1?label=Security&message=Hardened&color=green" alt="Security"></a>
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [English](#english) | [Español](#español)
