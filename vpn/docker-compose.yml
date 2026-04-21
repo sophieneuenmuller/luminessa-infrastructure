@@ -2,6 +2,8 @@ services:
   wg-easy:
     image: ghcr.io/wg-easy/wg-easy
     container_name: wg-easy
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
     environment:
       # Public hostname of the VPN server
       - WG_HOST=${WG_HOST:-vpn.luminessa.net}
