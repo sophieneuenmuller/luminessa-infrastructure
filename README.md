@@ -43,6 +43,7 @@ The following services form the core of my current setup:
 * **Forgejo:** Private Git hosting with integrated Forgejo Actions (CI/CD).
 * **PostgreSQL (v17.7):** High-performance relational database, restricted to internal network access.
 * **Syncthing:** Continuous, decentralized, and encrypted file synchronization.
+* **Grimmory:** Personal e-book library manager with OPDS support.
 * **Fail2ban:** Intrusion prevention monitoring SSH and application logs.
 
 ### Installation & Deployment
@@ -58,7 +59,7 @@ The following services form the core of my current setup:
 
 ### Roadmap
 
-- [ ] **Media Management:** Deployment of **Kavita** or **Komga** for personal library hosting.
+- [x] **Media Management:** Deployment of **Grimmory** for personal library hosting.
 - [ ] **Monitoring:** Integration of **Prometheus and Grafana** for system health metrics.
 - [ ] **Availability:** **Uptime Kuma** for service status notifications and heartbeat monitoring.
 
@@ -95,10 +96,11 @@ La integridad de los datos es la máxima prioridad. Utilizo **Backrest** (una in
 
 Los siguientes servicios forman el núcleo de mi configuración actual:
 
-* **Caddy (v2):** Proxy de borde con HTTPS automático y headers de seguridad reforzados.
+* **Caddy (v2):** Proxy de borde con HTTPS automático y headers de seguridad reforados.
 * **Forgejo:** Hosting de Git privado con CI/CD integrado (Forgejo Actions).
 * **PostgreSQL (v17.7):** Base de datos relacional de alto rendimiento, restringida a la red interna.
 * **Syncthing:** Sincronización de archivos continua, descentralizada y cifrada.
+* **Grimmory:** Gestor de biblioteca personal de e-books con soporte OPDS.
 * **Fail2ban:** Prevención de intrusiones monitoreando logs de SSH y aplicaciones.
 * **Wireguard Easy (VPN):** Gestión simplificada de VPN con soporte experimental para AmneziaWG.
 
@@ -115,6 +117,6 @@ Los siguientes servicios forman el núcleo de mi configuración actual:
 
 ### Hoja de Ruta
 
-- [ ] **Gestión de Medios:** Despliegue de **Kavita** o **Komga** para hosting de biblioteca personal.
+- [x] **Gestión de Medios:** Despliegue de **Grimmory** para hosting de biblioteca personal.
 - [ ] **Monitoreo:** Integración de **Prometheus y Grafana** para métricas de salud del sistema.
 - [ ] **Disponibilidad:** **Uptime Kuma** para notificaciones de estado y monitoreo de latidos (heartbeats).

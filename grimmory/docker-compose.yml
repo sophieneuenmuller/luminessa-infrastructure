@@ -1,0 +1,56 @@
+services:
+  grimmory:
+    image: ghcr.io/grimmory-tools/grimmory:latest
+    container_name: grimmory
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - grimmory-internal
+      - proxy
+    environment:
+      - DATABASE_URL=jdbc:mariadb://db:3306/${MYSQL_DATABASE}?user=${MYSQL_USER}&password=${MYSQL_PASSWORD}
+      - GRIMMORY_PORT=${GRIMMORY_PORT:-6060}
+      - GRIMMORY_EXTERNAL_URL=${GRIMMORY_EXTERNAL_URL:-https://libros.luminessa.net}
+      - TZ=${TZ:-America/Argentina/Buenos_Aires}
+    volumes:
+      - ./config:/config
+      - ./library:/library
+      - ./import:/import
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 512M
+
+  db:
+    image: mariadb:11
+    container_name: grimmory-db
+    restart: unless-stopped
+    command: --performance-schema=OFF
+    networks:
+      - grimmory-internal
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./db-data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  grimmory-internal:
+    internal: true
+  proxy:
+    external: true

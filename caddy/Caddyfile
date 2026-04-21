@@ -66,3 +66,13 @@ vpn.luminessa.net {
 	import headers
 }
 
+libros.luminessa.net {
+	request_body {
+		max_size 100MB
+	}
+
+	reverse_proxy grimmory:6060
+
+	import headers
+}
+
