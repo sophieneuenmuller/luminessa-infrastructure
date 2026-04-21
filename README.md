@@ -100,6 +100,7 @@ Los siguientes servicios forman el núcleo de mi configuración actual:
 * **PostgreSQL (v17.7):** Base de datos relacional de alto rendimiento, restringida a la red interna.
 * **Syncthing:** Sincronización de archivos continua, descentralizada y cifrada.
 * **Fail2ban:** Prevención de intrusiones monitoreando logs de SSH y aplicaciones.
+* **Wireguard Easy (VPN):** Gestión simplificada de VPN con soporte experimental para AmneziaWG.
 
 ### Instalación y Despliegue
 

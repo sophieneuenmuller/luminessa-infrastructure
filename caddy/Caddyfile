@@ -59,3 +59,10 @@ backups.luminessa.net {
 	import headers
 }
 
+vpn.luminessa.net {
+	# VPN administrative interface requirement
+	reverse_proxy wg-easy:51821
+
+	import headers
+}
+
