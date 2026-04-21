@@ -8,7 +8,7 @@ services:
       # Public hostname of the VPN server
       - WG_HOST=${WG_HOST:-vpn.luminessa.net}
       # Password for the Web UI (Port 51821)
-      - PASSWORD=${PASSWORD:-changeme}
+      - PASSWORD_HASH=${PASSWORD_HASH:-changeme}
       # Port for the Wireguard tunnel (UDP)
       - WG_PORT=${WG_PORT:-51820}
       # Experimental AmneziaWG support
@@ -17,7 +17,6 @@ services:
       - ./data:/etc/wireguard
     ports:
       - "51820:51820/udp"
-    restart: unless-stopped
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
