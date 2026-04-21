@@ -12,6 +12,7 @@ services:
       - WG_PORT=${WG_PORT:-51820}
       # Experimental AmneziaWG support
       - EXPERIMENTAL_AWG=true
+      - TZ=${TZ:-Europe/Madrid}
     volumes:
       - ./data:/etc/wireguard
     ports:

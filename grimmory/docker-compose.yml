@@ -13,7 +13,7 @@ services:
       - DATABASE_URL=jdbc:mariadb://db:3306/${MYSQL_DATABASE}?user=${MYSQL_USER}&password=${MYSQL_PASSWORD}
       - GRIMMORY_PORT=${GRIMMORY_PORT:-6060}
       - GRIMMORY_EXTERNAL_URL=${GRIMMORY_EXTERNAL_URL:-https://libros.luminessa.net}
-      - TZ=${TZ:-America/Argentina/Buenos_Aires}
+      - TZ=${TZ:-Europe/Madrid}
     volumes:
       - ./config:/config
       - ./library:/library
