@@ -14,6 +14,8 @@ services:
       - GRIMMORY_PORT=${GRIMMORY_PORT:-6060}
       - GRIMMORY_EXTERNAL_URL=${GRIMMORY_EXTERNAL_URL:-https://libros.luminessa.net}
       - TZ=${TZ:-Europe/Madrid}
+      # Ajuste de memoria para Java (JVM)
+      - JAVA_TOOL_OPTIONS=-XX:+UseG1GC -XX:+UseCompactObjectHeaders -XX:+UseStringDeduplication -XX:MaxRAMPercentage=60.0 -XX:+ExitOnOutOfMemoryError
     volumes:
       - ./config:/config
       - ./library:/library
@@ -22,7 +24,7 @@ services:
       resources:
         limits:
           cpus: '0.25'
-          memory: 512M
+          memory: 1G
 
   grimmory-db:
     image: mariadb:11
@@ -44,10 +46,11 @@ services:
           cpus: '0.10'
           memory: 128M
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u$${MYSQL_USER} -p$${MYSQL_PASSWORD}"]
+      interval: 15s
       timeout: 5s
-      retries: 3
+      retries: 5
+      start_period: 60s # Para primer inicio, darle un periodo de inicio de 60s, que permita a MariaDB inicializar como es debido. Se puede bajar a 15s a posteriori
 
 networks:
   grimmory-internal:
