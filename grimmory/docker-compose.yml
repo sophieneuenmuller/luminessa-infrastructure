@@ -4,13 +4,13 @@ services:
     container_name: grimmory
     restart: unless-stopped
     depends_on:
-      db:
+      grimmory-db:
         condition: service_healthy
     networks:
       - grimmory-internal
       - proxy
     environment:
-      - DATABASE_URL=jdbc:mariadb://db:3306/${MYSQL_DATABASE}?user=${MYSQL_USER}&password=${MYSQL_PASSWORD}
+      - DATABASE_URL=jdbc:mariadb://grimmory-db:3306/${MYSQL_DATABASE}?user=${MYSQL_USER}&password=${MYSQL_PASSWORD}
       - GRIMMORY_PORT=${GRIMMORY_PORT:-6060}
       - GRIMMORY_EXTERNAL_URL=${GRIMMORY_EXTERNAL_URL:-https://libros.luminessa.net}
       - TZ=${TZ:-Europe/Madrid}
@@ -24,7 +24,7 @@ services:
           cpus: '0.25'
           memory: 512M
 
-  db:
+  grimmory-db:
     image: mariadb:11
     container_name: grimmory-db
     restart: unless-stopped
