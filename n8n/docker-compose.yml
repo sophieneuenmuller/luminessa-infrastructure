@@ -1,0 +1,41 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=n8n.luminessa.net
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://n8n.luminessa.net/
+      - GENERIC_TIMEZONE=${TIMEZONE:-Europe/Madrid}
+      # Database Connection
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=${DB_NAME}
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=${DB_USER}
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD}
+      # Security
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 768M
+    volumes:
+      - ./data:/home/node/.n8n
+    networks:
+      - proxy
+      - database
+
+networks:
+  proxy:
+    external: true
+  database:
+    external: true

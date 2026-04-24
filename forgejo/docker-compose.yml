@@ -25,7 +25,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 1024M
+          memory: 768M
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "3000"]
       interval: 30s

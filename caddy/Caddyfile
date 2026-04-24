@@ -76,3 +76,13 @@ libros.luminessa.net {
 	import headers
 }
 
+n8n.luminessa.net {
+	request_body {
+		max_size 10MB
+	}
+
+	reverse_proxy n8n:5678
+
+	import headers
+}
+
