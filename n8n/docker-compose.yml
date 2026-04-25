@@ -24,7 +24,7 @@ services:
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_USER_FOLDER=/home/node/.n8n
+      - N8N_USER_FOLDER=/home/node
       - HOME=/home/node
     deploy:
       resources:
@@ -32,7 +32,7 @@ services:
           cpus: '1.0'
           memory: 768M
     volumes:
-      - /opt/n8n:/home/node/.n8n
+      - /opt/n8n/data:/home/node
     networks:
       - proxy
       - database
