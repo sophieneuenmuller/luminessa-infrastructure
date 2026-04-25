@@ -16,7 +16,7 @@ services:
           cpus: '0.25'
           memory: 256M
     volumes:
-      - /opt/engram-cloud:/home/engram
+      - /opt/engram-cloud/data:/home/engram
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:18080/health"]
       interval: 30s
