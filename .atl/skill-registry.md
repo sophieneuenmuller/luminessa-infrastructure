@@ -1,19 +1,19 @@
 # Skill Registry
 
-This registry tracks all available AI skills and project conventions.
-Load a skill by reading its file when its trigger conditions are met.
+This registry tracks all available AI skills and project conventions for **engram-cloud-deployment** (luminessa-infrastructure).
 
 ## Available Skills
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `skill-creator` | Creates new AI agent skills following the Agent Skills spec. Trigger: When user asks to create a new skill, add agent instructions, or document patterns for AI. | `/home/sophie/.gemini/skills/skill-creator/SKILL.md` |
-| `go-testing` | Go testing patterns for Gentleman.Dots, including Bubbletea TUI testing. Trigger: When writing Go tests, using teatest, or adding test coverage. | `/home/sophie/.gemini/skills/go-testing/SKILL.md` |
+| `skill-creator` | Creates new AI agent skills following the Agent Skills spec. | `/home/sophie/.gemini/skills/skill-creator/SKILL.md` |
+| `go-testing` | Go testing patterns for Gentleman.Dots, including Bubbletea TUI testing. | `/home/sophie/.gemini/skills/go-testing/SKILL.md` |
 | `find-skills` | Helps users discover and install agent skills. | `/home/sophie/.agents/skills/find-skills/SKILL.md` |
 
 ## Project Conventions
 
 | Name | Description | Path |
 |------|-------------|------|
-| `CLAUDE.md` | Project-level instructions and architecture | `/mnt/data/Luminessa/luminessa-infrastructure/CLAUDE.md` |
-| `SECURITY.md` | Security considerations and implementation guides | `/mnt/data/Luminessa/luminessa-infrastructure/SECURITY.md` |
+| `README.md` | Core philosophy, service overview, and deployment instructions. | `/mnt/data/Luminessa/luminessa-infrastructure/README.md` |
+| `SECURITY.md` | Security hardening, disclosure policy, and best practices. | `/mnt/data/Luminessa/luminessa-infrastructure/SECURITY.md` |
+| `GEMINI.md` | AI-specific project guidelines (inherited from workspace). | `/mnt/data/Luminessa/luminessa-landing/GEMINI.md` |

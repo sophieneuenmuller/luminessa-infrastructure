@@ -86,3 +86,13 @@ n8n.luminessa.net {
 	import headers
 }
 
+engram.luminessa.net {
+	request_body {
+		max_size 20MB
+	}
+
+	reverse_proxy engram-cloud:18080
+
+	import headers
+}
+
