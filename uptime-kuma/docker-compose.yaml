@@ -2,7 +2,7 @@ services:
   uptime-kuma:
     image: louislam/uptime-kuma:2
     container_name: uptime-kuma
-    restart: unless-stoppped
+    restart: unless-stopped
     user: "${PUID}:${PGID}"
     ports:
       - "3001:3001"
@@ -12,7 +12,7 @@ services:
           cpus: '0.25'
           memory: 256M
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://uptime.luminessa.net:3001" ] # TO-DO: Change domain
+      test: [ "CMD", "curl", "-f", "http://localhost:3001" ]
       interval: 30s
       retries: 3
       start_period: 10s
