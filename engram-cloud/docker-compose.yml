@@ -1,6 +1,8 @@
 services:
   engram-cloud:
-    image: ghcr.io/gentleman-programming/engram-cloud:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: engram-cloud
     restart: unless-stopped
     user: "${PUID}:${PGID}"
