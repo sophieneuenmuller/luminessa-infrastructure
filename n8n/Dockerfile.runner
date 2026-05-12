@@ -1,0 +1,17 @@
+# Dockerfile.runner
+
+FROM n8nio/runners:2.19.2
+
+USER root
+
+# Los paquetes Python van en el entorno virtual del runner
+WORKDIR /opt/runners/task-runner-python
+
+RUN uv pip install \
+    pandas \
+    openpyxl \
+    python-docx \
+    docxtpl
+
+# Copiar el config con los paquetes permitidos
+COPY n8n-task-runners.json /etc/n8n-task-runners.json
